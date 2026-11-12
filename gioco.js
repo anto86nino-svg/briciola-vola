@@ -19,8 +19,8 @@ window.addEventListener('resize', resize); resize();
 
 // ---------- immagini ----------
 const IMG = {};
-const SRC = { bri: 'assets/briciola.png', gab: 'assets/gabbiano.png', sli: 'assets/slitta.png', cop: 'assets/copertina.jpg',
-  c1: 'assets/cap06.jpg', c2: 'assets/cap07.jpg', c3: 'assets/cap13.jpg' };
+const SRC = { bri: 'assets/briciola.png', gab: 'assets/gabbiano.png', sli: 'assets/slitta.png', cop: 'assets/copertina.jpg' };
+for (let i = 1; i <= 14; i++) SRC['c' + i] = 'assets/cap' + String(i).padStart(2, '0') + '.jpg';
 let loaded = 0; const total = Object.keys(SRC).length;
 for (const k in SRC) { const im = new Image(); im.onload = im.onerror = () => loaded++; im.src = SRC[k]; IMG[k] = im; }
 const ok = im => im && im.complete && im.naturalWidth > 0;
@@ -97,21 +97,58 @@ function wrap(s, maxW, size, weight = 'normal') {
 }
 
 // ---------- livelli ----------
+const LETTERE = {
+  lalla: { from: 'Un foglietto a righe', body: 'Caro Babbo Natale, caro Babbo Natale,\nun amico dinosauro per Gino. Per Gino.\nLalla, 5 anni (5 anni)' },
+  pasq: { from: 'Una lettera ingiallita', body: 'Caro Babbo Natale,\nvorrei un campanello per la mia bicicletta, così tutti mi sentono arrivare.\nPasqualino, 7 anni' },
+  bri: { from: 'Un biglietto scritto con uno zoccolo', body: 'Dall’ultimo posto a sinistra si vede tutto il mondo.\nStanotte guarderò la tua casa.\nLa tua amica Briciola' }
+};
+// un livello per ogni capitolo del libro
 const LEVELS = [
-  { name: 'Il porto', num: 1, img: 'c1', len: 5200, speed: 150, mode: 'day', gulls: 3, roof: [110, 190], chim: 0.55,
-    intro: 'Briciola è caduta a Torre Pinella e ha perso il sonaglio. Aiutala a volare sopra il porto: prendi le risate per far suonare il sonaglio e le cartellate del nonno. Attenta all’Ammiraglio e ai comignoli!',
-    letter: { from: 'Una lettera ingiallita', body: 'Caro Babbo Natale,\nvorrei un campanello per la mia bicicletta, così tutti mi sentono arrivare.\nPasqualino, 7 anni' },
+  { name: 'Un tonfo sulla pasticceria', mode: 'night', ground: 'case', gulls: 0, chim: 0.45, speed: 140,
+    intro: 'È la notte del 19 dicembre. Briciola fa il suo primo volo con la slitta… e cade! Prima del tonfo, prova a volare un po’ sopra i tetti di Torre Pinella.',
+    quote: '«Mi scusi tanto per il disturbo» disse Briciola. «Sono caduta.»' },
+  { name: 'Non è un cane', mode: 'night', ground: 'case', gulls: 0, chim: 0.5, speed: 145,
+    intro: 'Briciola ha il singhiozzo: ogni «hic!» la fa salire. Prendi le risate di Lalla e non svegliare tutto il paese!',
+    quote: '«È un cane» sussurrò Lalla. «È un cane.»' },
+  { name: 'Nonno Tonino non ci sente', mode: 'night', ground: 'case', gulls: 0, chim: 0.55, speed: 150,
+    intro: 'Il nonno ha scoperto tutto, ma fa finta di niente. Raccogli le cartellate: Briciola ne va matta!',
+    quote: 'Il nonno Tonino diventò improvvisamente sordo dall’orecchio sinistro.' },
+  { name: 'Il sonaglio perduto', mode: 'day', ground: 'case', gulls: 1, chim: 0.55, speed: 150,
+    intro: 'Il sonaglio è sparito! Cerca tra i tetti al sole. La signora Addolorata guarda tutto col binocolo…',
+    quote: '«Poi è arrivato l’Ammiraglio, e se l’è preso.»' },
+  { name: 'Un cane molto, molto grosso', mode: 'day', ground: 'case', gulls: 1, chim: 0.6, speed: 155, letter: 'lalla',
+    intro: 'Briciola è travestita da cane, con il cappotto dello zio Peppino. Attraversa il paese senza farti scoprire dal vigile Spinaci!',
+    quote: '«BAU» disse Briciola. Il vigile Spinaci non era per niente convinto.' },
+  { name: 'Il gabbiano che rubava le stelle', mode: 'day', ground: 'molo', gulls: 4, chim: 0.4, speed: 155,
+    intro: 'Al porto ci sono tanti gabbiani. Uno è grosso come un tacchino: è l’Ammiraglio! Stagli lontano.',
     quote: '«È lui» disse Briciola. «Lo sento. Ha qualcosa che mi appartiene.»' },
-  { name: 'Il campanile storto', num: 2, img: 'c2', len: 5600, speed: 165, mode: 'sunset', gulls: 5, roof: [130, 220], chim: 0.7,
-    intro: 'Il nido dell’Ammiraglio è in cima al campanile storto. Vola tra i tetti bianchi, i comignoli e i campanili. Più risate prendi, più il sonaglio fa tin!',
-    letter: { from: 'Un foglietto a righe', body: 'Caro Babbo Natale, caro Babbo Natale,\nun amico dinosauro per Gino. Per Gino.\nLalla, 5 anni (5 anni)' },
+  { name: 'Su per il campanile', mode: 'day', ground: 'case', towers: true, gulls: 4, chim: 0.5, speed: 160,
+    intro: 'Il nido dell’Ammiraglio è in cima al campanile storto. Vola tra i campanili e i comignoli!',
     quote: '«L’avete cacciato!» disse zi’ Nunzio. «In quarant’anni, nessuno ci era mai riuscito!»' },
-  { name: 'Mezzanotte sul molo', num: 3, img: 'c3', len: 5000, speed: 175, mode: 'night', gulls: 3, roof: [0, 0], chim: 0.5,
-    intro: 'È la notte della Vigilia. Tutto il paese è sul molo e la slitta di Babbo Natale sta arrivando. Prendi le ultime risate e porta Briciola al suo posto: l’ultimo a sinistra!',
-    letter: { from: 'Un biglietto scritto con uno zoccolo', body: 'Dall’ultimo posto a sinistra si vede tutto il mondo.\nStanotte guarderò la tua casa.\nLa tua amica Briciola' },
+  { name: 'Una telefonata dai Caraibi', mode: 'sunset', ground: 'case', gulls: 2, chim: 0.6, speed: 160,
+    intro: 'Stasera torna la mamma dal mare. Il cielo è rosa: raccogli le risate prima che faccia buio.',
+    quote: '«Tutto bene» disse Nico. «Non fa niente.»' },
+  { name: 'Il pesce più strano del mercato', mode: 'day', ground: 'molo', gulls: 4, chim: 0.45, speed: 165,
+    intro: 'È la mattina del mercato del pesce. Il sonaglio è da qualche parte sulla banchina…',
+    quote: '«I cani» disse il vigile Spinaci «non portano i campanelli da bicicletta.»' },
+  { name: 'Il presepe vivente più vivente del mondo', mode: 'night', ground: 'case', towers: true, gulls: 1, chim: 0.5, speed: 165,
+    intro: 'Briciola fa l’asinello nel presepe vivente. Se le viene il singhiozzo, vola davanti a tutti!',
+    quote: 'I bambini ridevano, e il sonaglio, sulla bicicletta del vigile, suonò da solo.' },
+  { name: 'Il segreto del vigile Spinaci', mode: 'day', ground: 'case', gulls: 2, chim: 0.6, speed: 170, letter: 'pasq',
+    intro: 'Il vigile ha un segreto, scritto in una vecchia lettera. Trovala tra i tetti!',
+    quote: 'Poi, per la prima volta in cinquant’anni, il vigile Spinaci rise.' },
+  { name: 'Il sonaglio che non suona', mode: 'sunset', ground: 'case', gulls: 2, chim: 0.65, speed: 170,
+    intro: 'Il sonaglio è tornato, ma è addormentato. Servono tante, tantissime risate!',
+    quote: '«Piangere» disse il nonno «è come impastare. E lievita sempre di notte.»' },
+  { name: 'Mezzanotte sul molo', mode: 'night', ground: 'molo', gulls: 3, chim: 0.5, speed: 175, letter: 'bri', finale: true,
+    intro: 'È la notte della Vigilia. Tutto il paese è sul molo e la slitta di Babbo Natale sta arrivando. Porta Briciola al suo posto: l’ultimo a sinistra!',
+    quote: '«Ogni Vigilia, a mezzanotte, guarda il mare. Ci sarà una luce azzurra, all’ultimo posto a sinistra.»' },
+  { name: 'Farina sulle spalle', mode: 'dawn', ground: 'case', gulls: 0, chim: 0.4, speed: 150, last: true,
+    intro: 'È la mattina di Natale e Torre Pinella è bianca di zucchero a velo. Un ultimo volo, per salutare tutti!',
     quote: '' }
 ];
-const BELL_TARGET = 40;
+LEVELS.forEach((l, i) => { l.roof = l.towers ? [130, 220] : [110, 195]; l.num = i + 1; l.img = 'c' + (i + 1); l.len = 2600 + (i % 3) * 200; l.letterObj = l.letter ? LETTERE[l.letter] : null; });
+const BELL_TARGET = 120;
 
 // ---------- stato ----------
 let state = 'loading', L = null, LI = 0, tWorld = 0, dist = 0, time = 0, timeScale = 1;
@@ -133,19 +170,19 @@ function buildLevel() {
   let x = -200;
   while (x < L.len + 2000) {
     const w = 90 + R() * 90;
-    if (L.mode === 'night') { houses.push({ x, w, h: 118, molo: true }); }
+    if (L.ground === 'molo') { houses.push({ x, w, h: 118, molo: true }); }
     else {
       const h = L.roof[0] + R() * (L.roof[1] - L.roof[0]);
-      const tower = L.mode === 'sunset' && x > 900 && R() < 0.07 && !houses.some(o => o.tower && x - o.x < 1200);
+      const tower = L.towers && x > 700 && R() < 0.07 && !houses.some(o => o.tower && x - o.x < 1200);
       houses.push({ x, w: tower ? 90 : w, h: tower ? 380 + R() * 30 : h, dome: !tower && R() < 0.18, tower, win: Math.floor(R() * 3), door: R() < 0.6, ger: R() < 0.4, col: R() < 0.5 ? '#2f74b5' : '#3c9a6a', R: R() });
     }
-    x += (houses[houses.length - 1].w) + (L.mode !== 'night' && R() < 0.25 ? 20 + R() * 30 : 0);
+    x += (houses[houses.length - 1].w) + (L.ground !== 'molo' && R() < 0.25 ? 20 + R() * 30 : 0);
   }
   // comignoli / lampioni
   for (const h of houses) {
     if (h.x < 500 || h.x > L.len - 200 || h.tower) continue;
     if (R() < L.chim) {
-      if (L.mode === 'night') chims.push({ x: h.x + h.w * (0.2 + R() * 0.6), w: 14, top: H - h.h - 120 - R() * 70, lamp: true });
+      if (L.ground === 'molo') chims.push({ x: h.x + h.w * (0.2 + R() * 0.6), w: 14, top: H - h.h - 120 - R() * 70, lamp: true });
       else chims.push({ x: h.x + 15 + R() * (h.w - 50), w: 30, top: H - h.h - 45 - R() * 75, base: H - h.h, lamp: false });
     }
   }
@@ -155,7 +192,7 @@ function buildLevel() {
   let letterPlaced = false;
   while (ix < L.len - 150) {
     const yPath = 300 + Math.sin(ix / 420 + LI) * 120 + Math.sin(ix / 157) * 30;
-    if (!letterPlaced && ix > letterAt) { items.push({ x: ix, y: clamp(yPath - 40, 170, 430), t: 'lettera', r: 26, got: false }); letterPlaced = true; ix += 160; continue; }
+    if (L.letterObj && !letterPlaced && ix > letterAt) { items.push({ x: ix, y: clamp(yPath - 40, 170, 430), t: 'lettera', r: 26, got: false }); letterPlaced = true; ix += 160; continue; }
     const kind = (k % 4 === 3) ? 'cart' : 'risata';
     const n = kind === 'risata' ? 3 : 1;
     for (let j = 0; j < n; j++) items.push({ x: ix + j * 58, y: clamp(yPath + (j - 1) * 12, 160, safeYAt(ix + j * 58) - 40), t: kind, r: kind === 'cart' ? 22 : 20, got: false });
@@ -200,6 +237,7 @@ function update(dt) {
   for (const p of pops) { p.t += dt; p.y -= 40 * dt; }
   pops = pops.filter(p => p.t < 1.1);
   if (state === 'ending') { updSnow(dt, 1); finale.t += dt; finale.x -= 140 * dt; finale.y -= 30 * dt; return; }
+  if (state === 'play' && L && L.mode === 'dawn') updSnow(dt, 0.6);
   if (state !== 'play' || overlay) return;
   bri.x = W * 0.3;
   if (bri.noseT > 0) { bri.noseT -= dt; if (bri.noseT <= 0) bri.nose = 'base'; }
@@ -237,8 +275,9 @@ function update(dt) {
     if (!g.hit && bri.hurt <= 0) { const dx = g.sx - bri.x, dy = g.yy - bri.y; if (dx * dx + dy * dy < 50 * 50) steal(g); }
   }
   if (dist >= L.len) {
-    if (LI < 2) { state = 'play'; overlay = { type: 'level' }; SFX.fanfare(); }
-    else { endPhase = 'molo'; endT = 0; }
+    if (L.finale) { endPhase = 'molo'; endT = 0; }
+    else if (L.last) { state = 'ending'; finale = { t: 0 }; SFX.fanfare(); }
+    else { state = 'play'; overlay = { type: 'level' }; SFX.fanfare(); }
   }
 }
 function bump(msg) {
@@ -263,7 +302,7 @@ function collect(it, ix) {
     cart++; score += 25; setNose('oro', 1.5); SFX.gnam();
     pops.push({ x: ix, y: it.y - 24, s: 'gnam!', t: 0, c: '#ffcf6b' });
   } else if (it.t === 'lettera') {
-    lettere++; score += 100; SFX.letter(); overlay = { type: 'letter', L: L.letter };
+    lettere++; score += 100; SFX.letter(); overlay = { type: 'letter', L: L.letterObj };
   }
 }
 function updEnd(dt) {
@@ -302,7 +341,7 @@ function updEnd(dt) {
     updSnow(dt, 1);
     sleigh.x -= 60 * dt * endT * 3; sleigh.y -= 40 * dt * endT * 2;
     bri.x = sleigh.gx = sleigh.x + 405 * sleigh.s; bri.y = sleigh.gy = sleigh.y + 172 * sleigh.s - 6; bri.s = sleigh.s * 0.6;
-    if (endT > 3.2) { state = 'ending'; finale = { t: 0, x: sleigh.x, y: sleigh.y, s: sleigh.s }; }
+    if (endT > 3.2) { overlay = { type: 'level' }; }
   }
 }
 function updSnow(dt, k) {
@@ -316,6 +355,7 @@ function sky() {
   const g = ctx.createLinearGradient(0, 0, 0, H);
   if (m === 'day') { g.addColorStop(0, '#5fb3e8'); g.addColorStop(0.6, '#bfe6fb'); g.addColorStop(1, '#eaf7ff'); }
   else if (m === 'sunset') { g.addColorStop(0, '#5a5ea8'); g.addColorStop(0.35, '#e58ba0'); g.addColorStop(0.7, '#ffc58a'); g.addColorStop(1, '#ffe7c4'); }
+  else if (m === 'dawn') { g.addColorStop(0, '#9fb8e8'); g.addColorStop(0.45, '#f7c3b0'); g.addColorStop(1, '#fff3df'); }
   else { g.addColorStop(0, '#070d2e'); g.addColorStop(0.6, '#1b2a63'); g.addColorStop(1, '#2c3d7a'); }
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
   if (m === 'night' || m === 'sunset') {
@@ -327,7 +367,7 @@ function sky() {
 }
 function cloud(x, y, s) { ctx.beginPath(); ctx.arc(x, y, 26 * s, 0, 7); ctx.arc(x + 30 * s, y - 14 * s, 32 * s, 0, 7); ctx.arc(x + 64 * s, y, 24 * s, 0, 7); ctx.rect(x, y, 64 * s, 24 * s); ctx.fill(); }
 function farLayer() {
-  const m = L.mode; const seaY = H - 230;
+  const m = L.mode === 'dawn' ? 'day' : L.mode; const seaY = H - 230;
   // mare
   const g = ctx.createLinearGradient(0, seaY, 0, H);
   if (m === 'day') { g.addColorStop(0, '#2a8fc4'); g.addColorStop(1, '#1b6ea3'); }
@@ -355,7 +395,7 @@ function boat(x, y, c) {
   ctx.fillStyle = '#fff'; ctx.fillRect(x + 24, y - 14 + b, 22, 14); ctx.fillStyle = '#5a4630'; ctx.fillRect(x + 34, y - 40 + b, 2, 26);
 }
 function nearLayer() {
-  const m = L.mode;
+  const m = L.mode === 'dawn' ? 'day' : L.mode; const sugar = L.mode === 'dawn';
   for (const h of houses) {
     const x = h.x - dist; if (x > W + 20 || x + h.w < -20) continue;
     const top = H - h.h;
@@ -375,6 +415,7 @@ function nearLayer() {
     }
     ctx.fillStyle = wall; ctx.fillRect(x, top, h.w + 1, h.h); ctx.fillStyle = side; ctx.fillRect(x + h.w - 12, top, 12, h.h);
     ctx.fillStyle = m === 'night' ? '#aab3d8' : '#efe7d6'; ctx.fillRect(x - 3, top - 6, h.w + 6, 8);
+    if (sugar) { ctx.fillStyle = '#ffffff'; rr(x - 5, top - 12, h.w + 10, 12, 6); ctx.fill(); }
     if (h.dome) { ctx.fillStyle = wall; ctx.beginPath(); ctx.arc(x + h.w / 2, top - 4, h.w * 0.28, Math.PI, 0); ctx.fill(); }
     const lit = m === 'night' || m === 'sunset';
     for (let i = 0; i <= h.win; i++) { const wx = x + 16 + i * 30; if (wx > x + h.w - 30) break; ctx.fillStyle = lit && (i + Math.floor(h.R * 5)) % 2 === 0 ? '#ffd27a' : h.col; rr(wx, top + 24, 16, 20, 7); ctx.fill(); }
@@ -456,7 +497,7 @@ function hud() {
   ctx.fillStyle = g; rr(bx, 56, Math.max(16, bw * bell / BELL_TARGET), 16, 8); ctx.fill();
   text('Sonaglio', bx + 8, 64, 11, '#1f3a7a', 'left', 'bold');
   bellIcon(W - 40, 62, bellRing);
-  text('Livello ' + L.num + ': ' + L.name, 16, 108, 15, '#fff', 'left', 'bold', 'rgba(10,20,60,0.7)', 4);
+  text(L.num + '. ' + L.name, 16, 150, 14, '#fff', 'left', 'bold', 'rgba(10,20,60,0.7)', 4);
   iconButton(W - 52, 94, 40, 'mute', () => setMuted(!muted));
   iconButton(W - 100, 94, 40, 'restart', () => { newGame(); });
 }
@@ -511,7 +552,7 @@ function scene() {
   if (sleigh) drawSleigh(sleigh, endPhase === 'away');
   drawBri(bri.x, bri.y, bri.ang, endPhase === 'away', bri.s || 0.5);
   drawParticles();
-  if (endPhase === 'away') drawSnow();
+  if (endPhase === 'away' || L.mode === 'dawn') drawSnow();
   if (flash > 0) { ctx.fillStyle = `rgba(120,170,255,${flash})`; ctx.fillRect(0, 0, W, H); }
 }
 function crowd() {
@@ -539,13 +580,13 @@ function titleScreen() {
   text('Un gioco di Natale', W / 2, py + 86, 18, '#1f3a7a', 'center', 'bold');
   text('dal libro di Antonino Campanella', W / 2, py + 110, 17, '#1f3a7a', 'center', 'normal');
   bigButton('Gioca!', W / 2, py + 165, 220, () => { audioInit(); newGame(); });
-  let ty = py + 218; for (const l of wrap('Tocca lo schermo (o premi spazio): Briciola fa «hic!» e vola su. Niente pubblicità, niente dati: solo Natale.', Math.min(400, W - 28) - 50, 14)) { text(l, W / 2, ty, 14, '#444', 'center', 'normal'); ty += 19; }
+  let ty = py + 218; for (const l of wrap('14 capitoli, 14 voli. Tocca lo schermo (o premi spazio): Briciola fa «hic!» e vola su. Niente pubblicità, niente dati.', Math.min(400, W - 28) - 50, 14)) { text(l, W / 2, ty, 14, '#444', 'center', 'normal'); ty += 19; }
   iconButton(W - 52, 14, 40, 'mute', () => setMuted(!muted));
 }
 function introScreen() {
   scene(); ctx.fillStyle = 'rgba(8,14,45,0.55)'; ctx.fillRect(0, 0, W, H);
   const pw = Math.min(420, W - 28), px = W / 2 - pw / 2, py = 70, ph = H - 140; panel(px, py, pw, ph);
-  text('Livello ' + L.num + ' di 3', W / 2, py + 40, 18, '#2e8b47');
+  text('Capitolo ' + L.num + ' di 14', W / 2, py + 40, 18, '#2e8b47');
   text(L.name, W / 2, py + 76, 32, '#d6283b');
   const im = IMG[L.img]; if (ok(im)) { const iw = pw - 60, ih = iw * im.naturalHeight / im.naturalWidth; const h2 = Math.min(ih, 240), w2 = h2 * im.naturalWidth / im.naturalHeight; ctx.save(); rr(W / 2 - w2 / 2, py + 102, w2, h2, 14); ctx.clip(); ctx.drawImage(im, W / 2 - w2 / 2, py + 102, w2, h2); ctx.restore(); }
   const lines = wrap(L.intro, pw - 60, 18); let y = py + 370;
@@ -565,7 +606,7 @@ function letterOverlay() {
 function levelOverlay() {
   ctx.fillStyle = 'rgba(8,14,45,0.55)'; ctx.fillRect(0, 0, W, H);
   const pw = Math.min(400, W - 28), px = W / 2 - pw / 2, py = 150, ph = 470; panel(px, py, pw, ph);
-  text('Livello superato!', W / 2, py + 50, 32, '#d6283b');
+  text('Capitolo superato!', W / 2, py + 50, 30, '#d6283b');
   text(L.name, W / 2, py + 88, 20, '#2e8b47');
   text('★ ' + score + ' punti', W / 2, py + 140, 26, '#c9781e');
   text('Risate: ' + risate + '   Cartellate: ' + cart + '   Lettere: ' + lettere + '/3', W / 2, py + 180, 16, '#333', 'center', 'normal');
@@ -574,7 +615,7 @@ function levelOverlay() {
 }
 function endingScreen() {
   // notte, slitta che si allontana, neve di zucchero a velo
-  L = LEVELS[2]; sky(); farLayer(); nearLayer();
+  L = LEVELS[12]; sky(); farLayer(); nearLayer();
   ctx.save(); const s = Math.min(0.5, W / 900);
   const span = W + 720 * s + 40, fx = W + 20 - ((finale.t * 80) % span), fy = 50 + Math.sin(finale.t * 1.3) * 10;
   if (ok(IMG.sli)) ctx.drawImage(IMG.sli, fx, fy, 720 * s, 239 * s);
@@ -583,7 +624,7 @@ function endingScreen() {
   drawSnow();
   const pw = Math.min(420, W - 28), px = W / 2 - pw / 2, py = 205, ph = 530; panel(px, py, pw, ph);
   text('Ce l’hai fatta!', W / 2, py + 48, 36, '#d6283b');
-  const l1 = wrap('Briciola è tornata al suo posto: l’ultimo a sinistra. E su Torre Pinella nevica zucchero a velo.', pw - 60, 18);
+  const l1 = wrap('Hai volato per tutti i 14 capitoli! Briciola è tornata al suo posto, l’ultimo a sinistra, e su Torre Pinella nevica zucchero a velo.', pw - 60, 18);
   let y = py + 94; for (const l of l1) { text(l, W / 2, y, 18, '#1f3a7a', 'center', 'normal'); y += 25; }
   text('★ ' + score + ' punti', W / 2, y + 22, 30, '#c9781e'); y += 60;
   text('Risate: ' + risate + '   Cartellate: ' + cart + '   Lettere: ' + lettere + '/3', W / 2, y, 16, '#333', 'center', 'normal'); y += 40;

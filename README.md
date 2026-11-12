@@ -2,7 +2,7 @@
 
 Un mini gioco di Natale per bambini (5-10 anni) tratto dal libro **«Aiuto, è caduta una renna!»** di Antonino Campanella.
 
-Guida Briciola, la piccola renna apprendista, nel cielo sopra Torre Pinella. Raccogli le risate per far suonare il sonaglio, prendi le cartellate del nonno, trova le lettere perdute e stai lontano dall'Ammiraglio e dai comignoli. Poi riporta Briciola al suo posto sulla slitta di Babbo Natale: l'ultimo a sinistra.
+Guida Briciola, la piccola renna apprendista, nel cielo sopra Torre Pinella, in 14 livelli brevi, uno per ogni capitolo del libro. Raccogli le risate per far suonare il sonaglio, prendi le cartellate del nonno, trova le lettere perdute e stai lontano dall'Ammiraglio e dai comignoli. Poi riporta Briciola al suo posto sulla slitta di Babbo Natale: l'ultimo a sinistra.
 
 - Si gioca qui: https://anto86nino-svg.github.io/briciola-vola/
 - Comandi: tocca lo schermo, oppure premi spazio o la freccia su, e Briciola fa «hic!» e vola.
